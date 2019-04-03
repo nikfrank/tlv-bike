@@ -7,16 +7,33 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ToastAndroid,
 } from 'react-native';
-import { WebBrowser, MapView } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import { WebBrowser, MapView } from 'expo';
+
+import hooks from './network';
+
+const { Marker, PolyLine } = MapView;
 
 export default class HomeScreen extends React.Component {
-  static navigationOptions = {
-    header: null,
-  };
+  state = {
+    newMarker: null,
+  }
 
+  static hooks = hooks;
+  
+  longPress = (e)=>{
+    if(this.state.newMarker) return;
+
+    this.props.saveReportMarker(e.nativeEvent.coordinate);
+    this.setState({ newMarker: e.nativeEvent.coordinate },
+                  ()=> ToastAndroid.show('Recording location to report...', ToastAndroid.LONG));
+
+    setTimeout(()=> this.props.navigation.navigate('Links'), 2500);
+  }
+  
   render() {
     return (
       <View style={styles.container}>
@@ -24,11 +41,21 @@ export default class HomeScreen extends React.Component {
           style={{ flex: 1 }}
           initialRegion={{
             latitude: 32.0805,
-            longitude: 34.7754,
+            longitude: 34.7794,
             latitudeDelta: 0.0615,
-            longitudeDelta: 0.0141,
+            longitudeDelta: 0.0281,
           }}
-        />
+          onLongPress={this.longPress}
+        >
+
+          <Marker coordinate={{ latitude: 32.0805, longitude: 34.7794}}
+                  image={require('../assets/images/robot-dev.png')}
+                  title='harsh' description='harsh' />
+
+          {this.state.newMarker ? (
+             <Marker coordinate={this.state.newMarker}/>
+          ) : null}
+        </MapView>
       </View>
     );
   }
