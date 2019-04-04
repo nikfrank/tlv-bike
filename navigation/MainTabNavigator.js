@@ -26,7 +26,7 @@ HomeStack.navigationOptions = ({ navigation }) => {
         name={
           Platform.OS === 'ios'
           ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          : 'md-bicycle'
         }
       />
     ),

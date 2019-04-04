@@ -11,11 +11,18 @@ import {
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
-import { WebBrowser, MapView } from 'expo';
+import { WebBrowser, MapView, Icon } from 'expo';
 
 import hooks from './network';
 
 const { Marker, PolyLine } = MapView;
+
+const dots = {
+  red: require('../assets/images/red-dot.png'),
+  orange: require('../assets/images/orange-dot.png'),
+  green: require('../assets/images/green-dot.png'),
+  blue: require('../assets/images/blue-dot.png'),
+}
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -23,6 +30,15 @@ export default class HomeScreen extends React.Component {
   }
 
   static hooks = hooks;
+
+  componentDidMount(){
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        this.props.loadReports();
+      }
+    );
+  }
   
   longPress = (e)=>{
     if(this.state.newMarker) return;
@@ -32,11 +48,37 @@ export default class HomeScreen extends React.Component {
                   ()=> ToastAndroid.show('Recording location to report...', ToastAndroid.LONG));
 
     setTimeout(()=> this.props.navigation.navigate('Links'), 2500);
+    setTimeout(()=> this.setState({ newMarker: null }), 2500);
+  }
+
+  comingSoon = ()=>{
+    ToastAndroid.show('Directions coming soon...', ToastAndroid.LONG)
   }
   
   render() {
+    const { reports=[] } = this.props;
+    
     return (
       <View style={styles.container}>
+        <TouchableOpacity style={{
+          position: 'absolute',
+          right: 20,
+          bottom: 40,
+          height: 60,
+          width: 60,
+          borderRadius: 30,
+          zIndex: 30,
+          backgroundColor: 'green'
+        }} onPress={this.comingSoon}>
+          <Icon.Ionicons
+            name='md-git-compare'
+            size={26}
+            style={{ marginLeft: 18, marginTop: 16, marginBottom: -3 }}
+            color='white'
+          />
+          
+        </TouchableOpacity>
+        
         <MapView
           style={{ flex: 1 }}
           initialRegion={{
@@ -48,10 +90,12 @@ export default class HomeScreen extends React.Component {
           onLongPress={this.longPress}
         >
 
-          <Marker coordinate={{ latitude: 32.0805, longitude: 34.7794}}
-                  image={require('../assets/images/robot-dev.png')}
-                  title='harsh' description='harsh' />
-
+          {reports.map(({ latitude, longitude, type, text, color, id })=>(
+            <Marker key={id}
+                    coordinate={{ latitude, longitude }}
+                    image={dots[color]}
+                    title={type} description={text} />
+          ))}
           {this.state.newMarker ? (
              <Marker coordinate={this.state.newMarker}/>
           ) : null}
@@ -69,6 +113,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    position: 'relative',
   },
   developmentModeText: {
     marginBottom: 20,
