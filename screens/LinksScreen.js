@@ -5,16 +5,21 @@ import {
   TextInput,
   Button,
   ToastAndroid,
+  View,
+  Text,
+  Picker,
 } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 
 import hooks from './network';
+import copy from './copy';
 
 export default class LinksScreen extends React.Component {
   static hooks = hooks;
 
   state = {
-    val: ''
+    text: '',
+    severity: 'red',
   }
 
   componentDidMount(){
@@ -28,42 +33,97 @@ export default class LinksScreen extends React.Component {
   }
 
 
-  setVal = (val)=>{
-    this.setState({ val });
-  }
+  setText = (text)=> this.setState({ text })
+
+  setReportType = (reportType) => this.setState({ reportType })
+  setSeverity = (severity) => this.setState({ severity })
 
   submit = ()=>{
     this.props.createReport({
-      ...this.state,
-      color: 'red',
+      latitude: this.state.latitude,
+      longitude: this.state.longitude,
+      type: this.state.reportType || 'Crash',
+      text: this.state.text || '',
+      color: this.state.severity || 'red',
       id: Math.random(),
     });
-    this.setState({ latitude: null, longitude: null, val: ''});
+    this.setState({ latitude: null, longitude: null, text: ''});
     ToastAndroid.show('Saving report...', ToastAndroid.LONG)
   }
   
   render() {
-    const { val, latitude, longitude } = this.state;
+    const { text, latitude, longitude, reportType, severity } = this.state;
     
     return (
       <ScrollView style={styles.container}>
-        <TextInput
-          onChangeText={this.setVal}
-          value={val}
-          style={styles.root}
-        />
+        
+        {latitude ? [
+           <Text key='lat-label'>Latitude (°{latitude > 0 ? 'N' : 'S'})</Text>,
+           <TextInput
+             key='latitude'
+             value={latitude ? (''+latitude) : 'Latitude'}
+             style={styles.textInput}
+           />,
 
-        <TextInput
-          value={latitude ? (''+latitude) : 'Latitude'}
-          style={styles.root}
-        />
+           <Text key='lng-label'>Longitude (°{longitude > 0 ? 'E' : 'W'})</Text>,
+           <TextInput
+             key='longitude'
+             value={longitude ? (''+longitude) : 'Longitude'}
+             style={styles.textInput}
+           />
+        ] : (
+           <View>
+             <Text style={styles.locText}>
+               To select location, return to map 
+             </Text>
+             <Text style={styles.locText}>
+               Press and hold map to drop pin
+             </Text>
+           </View>
+        )}
 
+        <Text style={styles.reportTypeLabel}>
+          Report Type:
+        </Text>
+        <Picker
+          selectedValue={reportType}
+          style={{height: 50}}
+          onValueChange={this.setReportType}>
+          <Picker.Item label="Crash" value="Crash" />
+          <Picker.Item label="Animal in Lane" value="Animal in Lane" />
+          <Picker.Item label="Safety Event" value="Safety Event" />
+        </Picker>
+
+        
+        <Text style={styles.reportTypeLabel}>
+          Severity:
+        </Text>
+        <Picker
+          selectedValue={severity}
+          style={{height: 50}}
+          onValueChange={this.setSeverity}>
+          <Picker.Item label="Serious (red)" value="red" />
+          <Picker.Item label="Moderate (orange)" value="orange" />
+          <Picker.Item label="Needs Attention (blue)" value="blue" />
+          <Picker.Item label="Benign (green)" value="green" />
+        </Picker>
+
+        <Text>
+          Description (free text)
+        </Text>
         <TextInput
-          value={longitude ? (''+longitude) : 'Longitude'}
-          style={styles.root}
+          onChangeText={this.setText}
+          value={text}
+          style={styles.textInput}
+          multiline={true}
+          numberOfLines={4}
         />
+        
         <Button onPress={this.submit}
+                disabled={!latitude}
+                style={styles.submitButton}
                 title='Done!'/>
+        <View style={{ height: 1000 }}/>
       </ScrollView>
     );
   }
@@ -72,14 +132,29 @@ export default class LinksScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
+    padding: 15,
     backgroundColor: '#fff',
   },
 
-  root: {
+  locText: {
+    padding: 5,
+    fontSize: 14,
+    backgroundColor: '#8f88',
+    borderRadius: 4,
+  },
+
+  reportTypeLabel: {
+    marginTop: 12,
+  },
+  
+  textInput: {
     borderColor: 'gray',
     borderWidth: 1,
-    height: 40,
     padding: 10,
-  }
+    marginBottom: 20,
+  },
+
+  submitButton: {
+    marginTop: 20,
+  },
 });

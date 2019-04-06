@@ -8,18 +8,20 @@ import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 import hooker from 'react-hooker';
+import withLang from '../screens/withLang';
 
-
-const Home = hooker(HomeScreen);
+let homeTitle = 'Map';
+const Home = withLang(hooker(HomeScreen));
 Home.navigationOptions = { header: null };
 const HomeStack = createStackNavigator({ Home });
 
 HomeStack.navigationOptions = ({ navigation }) => {
   const { state } = navigation;
   const params = (state.routes||[]).find(r=> r.routeName === 'Home').params;
-
+  homeTitle = (params && params.title) || homeTitle;
+  
   return {
-    tabBarLabel: 'Home',
+    tabBarLabel: (params && params.title) || 'Map',
     tabBarIcon: ({ focused }) => (
       <TabBarIcon
         focused={focused}
@@ -33,16 +35,18 @@ HomeStack.navigationOptions = ({ navigation }) => {
   };
 }
 
-const Links = hooker(LinksScreen);
+let linksTitle = 'Report';
+const Links = withLang(hooker(LinksScreen));
 Links.navigationOptions = { title: 'Report' };
 const LinksStack = createStackNavigator({ Links });
 
 LinksStack.navigationOptions = ({ navigation }) => {
   const { state } = navigation;
   const params = (state.routes||[]).find(r=> r.routeName === 'Links').params;
+  linksTitle = (params && params.title) || linksTitle;
 
   return {
-    tabBarLabel: 'Report',
+    tabBarLabel: (params && params.title) || 'Report',
     tabBarIcon: ({ focused }) => (
       <TabBarIcon
         focused={focused}
@@ -53,7 +57,7 @@ LinksStack.navigationOptions = ({ navigation }) => {
 };
 
 let settingsTitle = 'Settings';
-const Settings = hooker(SettingsScreen);
+const Settings = withLang(hooker(SettingsScreen));
 Settings.navigationOptions = ({ navigation })=>{
   return {
     title: settingsTitle,

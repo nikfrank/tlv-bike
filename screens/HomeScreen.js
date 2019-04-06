@@ -14,6 +14,7 @@ import { MonoText } from '../components/StyledText';
 import { WebBrowser, MapView, Icon } from 'expo';
 
 import hooks from './network';
+import copy from './copy';
 
 const { Marker, PolyLine } = MapView;
 
@@ -22,7 +23,7 @@ const dots = {
   orange: require('../assets/images/orange-dot.png'),
   green: require('../assets/images/green-dot.png'),
   blue: require('../assets/images/blue-dot.png'),
-}
+};
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -30,7 +31,7 @@ export default class HomeScreen extends React.Component {
   }
 
   static hooks = hooks;
-
+  
   componentDidMount(){
     this.props.navigation.addListener(
       'didFocus',
@@ -57,7 +58,7 @@ export default class HomeScreen extends React.Component {
   
   render() {
     const { reports=[] } = this.props;
-    
+
     return (
       <View style={styles.container}>
         <TouchableOpacity style={{

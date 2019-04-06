@@ -13,7 +13,7 @@ let reports = [
     longitude: 34.7709,
     type: 'Animal in Lane',
     text: 'cat with kittens. Very cute, easy to run over',
-    color: 'green',
+    color: 'blue',
     id: 1,
   },
   
@@ -31,7 +31,7 @@ let reports = [
     longitude: 34.7829 - i*0.00024 + 0.00001 * i*i,
     type: 'Safety Event',
     text: 'Biking against traffic',
-    color: 'blue',
+    color: 'orange',
     id: 8 + i,
   })),
 ];
