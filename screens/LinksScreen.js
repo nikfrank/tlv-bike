@@ -53,7 +53,8 @@ export default class LinksScreen extends React.Component {
   
   render() {
     const { text, latitude, longitude, reportType, severity } = this.state;
-    
+    const { lang } = this.props;
+
     return (
       <ScrollView style={styles.container}>
         
@@ -96,16 +97,16 @@ export default class LinksScreen extends React.Component {
 
         
         <Text style={styles.reportTypeLabel}>
-          Severity:
+          {copy[lang].severity}
         </Text>
         <Picker
           selectedValue={severity}
           style={{height: 50}}
           onValueChange={this.setSeverity}>
-          <Picker.Item label="Serious (red)" value="red" />
-          <Picker.Item label="Moderate (orange)" value="orange" />
-          <Picker.Item label="Needs Attention (blue)" value="blue" />
-          <Picker.Item label="Benign (green)" value="green" />
+          <Picker.Item label={copy[lang].critical+' ('+copy[lang].red+')'} value="red" />
+          <Picker.Item label={copy[lang].serious+' ('+copy[lang].orange+')'} value="orange" />
+          <Picker.Item label={copy[lang].moderate+' ('+copy[lang].blue+')'} value="blue" />
+          <Picker.Item label={copy[lang].benign+' ('+copy[lang].green+')'} value="green" />
         </Picker>
 
         <Text>

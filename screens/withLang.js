@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
+let currentLang = 'en';
 const listeners = {};
 
 export default P=> class WithLang extends Component {
-  state = { lang: 'en' }
+  state = { lang: currentLang }
   
   componentDidMount(){
     this.i = Math.random();
@@ -14,8 +15,10 @@ export default P=> class WithLang extends Component {
     delete listeners[this.i];
   }
 
-  setLang = lang => 
+  setLang = lang => (
+    currentLang = lang,
     Object.keys(listeners).forEach(i=> listeners[i](lang))
+  )
   
   render(){
     return (<P {...this.props} lang={this.state.lang} setLang={this.setLang}/>);

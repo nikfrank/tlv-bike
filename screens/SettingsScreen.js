@@ -29,6 +29,7 @@ export default class SettingsScreen extends React.Component {
     
     return [
       <View key='form'>
+        <Text style={{ color: '#cccc', padding: 3 }}>{copy[lang].language}</Text>
         <Picker
           selectedValue={lang}
           style={{height: 50}}
