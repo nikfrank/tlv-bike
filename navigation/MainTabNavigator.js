@@ -37,7 +37,11 @@ HomeStack.navigationOptions = ({ navigation }) => {
 
 let linksTitle = 'Report';
 const Links = withLang(hooker(LinksScreen));
-Links.navigationOptions = { title: 'Report' };
+Links.navigationOptions = ({ navigation })=>{
+  return {
+    title: linksTitle,
+  }
+};
 const LinksStack = createStackNavigator({ Links });
 
 LinksStack.navigationOptions = ({ navigation }) => {

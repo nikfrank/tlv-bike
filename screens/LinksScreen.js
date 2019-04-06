@@ -19,6 +19,7 @@ export default class LinksScreen extends React.Component {
 
   state = {
     text: '',
+    type: 'crash',
     severity: 'red',
   }
 
@@ -42,13 +43,13 @@ export default class LinksScreen extends React.Component {
     this.props.createReport({
       latitude: this.state.latitude,
       longitude: this.state.longitude,
-      type: this.state.reportType || 'Crash',
+      type: this.state.reportType,
       text: this.state.text || '',
-      color: this.state.severity || 'red',
+      color: this.state.severity,
       id: Math.random(),
     });
-    this.setState({ latitude: null, longitude: null, text: ''});
-    ToastAndroid.show('Saving report...', ToastAndroid.LONG)
+    this.setState({ latitude: null, longitude: null, text: '', type: 'crash', severity: 'red', });
+    ToastAndroid.show(copy[this.props.lang].savingReport, ToastAndroid.LONG)
   }
   
   render() {
@@ -59,40 +60,40 @@ export default class LinksScreen extends React.Component {
       <ScrollView style={styles.container}>
         
         {latitude ? [
-           <Text key='lat-label'>Latitude (°{latitude > 0 ? 'N' : 'S'})</Text>,
+           <Text key='lat-label'>{copy[lang].latitude} (°{latitude > 0 ? 'N' : 'S'})</Text>,
            <TextInput
              key='latitude'
-             value={latitude ? (''+latitude) : 'Latitude'}
+             value={(''+latitude)}
              style={styles.textInput}
            />,
 
-           <Text key='lng-label'>Longitude (°{longitude > 0 ? 'E' : 'W'})</Text>,
+           <Text key='lng-label'>{copy[lang].longitude} (°{longitude > 0 ? 'E' : 'W'})</Text>,
            <TextInput
              key='longitude'
-             value={longitude ? (''+longitude) : 'Longitude'}
+             value={(''+longitude)}
              style={styles.textInput}
            />
         ] : (
            <View>
              <Text style={styles.locText}>
-               To select location, return to map 
+               {copy[lang].toSelectLocation}
              </Text>
              <Text style={styles.locText}>
-               Press and hold map to drop pin
+               {copy[lang].pressAndHold}
              </Text>
            </View>
         )}
 
         <Text style={styles.reportTypeLabel}>
-          Report Type:
+          {copy[lang].reportType}
         </Text>
         <Picker
           selectedValue={reportType}
           style={{height: 50}}
           onValueChange={this.setReportType}>
-          <Picker.Item label="Crash" value="Crash" />
-          <Picker.Item label="Animal in Lane" value="Animal in Lane" />
-          <Picker.Item label="Safety Event" value="Safety Event" />
+          <Picker.Item label={copy[lang].crash} value="crash" />
+          <Picker.Item label={copy[lang].animalInLane} value="animalInLane" />
+          <Picker.Item label={copy[lang].safetyEvent} value="safetyEvent" />
         </Picker>
 
         
@@ -110,7 +111,7 @@ export default class LinksScreen extends React.Component {
         </Picker>
 
         <Text>
-          Description (free text)
+          {copy[lang].description}
         </Text>
         <TextInput
           onChangeText={this.setText}
@@ -123,7 +124,7 @@ export default class LinksScreen extends React.Component {
         <Button onPress={this.submit}
                 disabled={!latitude}
                 style={styles.submitButton}
-                title='Done!'/>
+                title={copy[lang].done}/>
         <View style={{ height: 1000 }}/>
       </ScrollView>
     );

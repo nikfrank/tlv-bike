@@ -2,7 +2,7 @@ let reports = [
   {
     latitude: 32.0809,
     longitude: 34.7799,
-    type: 'Crash',
+    type: 'crash',
     text: 'ebike crash with helmet - he was okay',
     color: 'red',
     id: 0,
@@ -11,7 +11,7 @@ let reports = [
   {
     latitude: 32.0689,
     longitude: 34.7709,
-    type: 'Animal in Lane',
+    type: 'animalInLane',
     text: 'cat with kittens. Very cute, easy to run over',
     color: 'blue',
     id: 1,
@@ -20,7 +20,7 @@ let reports = [
   {
     latitude: 32.0681,
     longitude: 34.7710,
-    type: 'Animal in Lane',
+    type: 'animalInLane',
     text: 'Drunk Homie running around',
     color: 'green',
     id: 2,
@@ -29,7 +29,7 @@ let reports = [
   ...[...Array(15)].map((o, i)=> ({
     latitude: 32.09 - i*0.0009,
     longitude: 34.7829 - i*0.00024 + 0.00001 * i*i,
-    type: 'Safety Event',
+    type: 'safetyEvent',
     text: 'Biking against traffic',
     color: 'orange',
     id: 8 + i,

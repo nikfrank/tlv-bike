@@ -46,18 +46,18 @@ export default class HomeScreen extends React.Component {
 
     this.props.saveReportMarker(e.nativeEvent.coordinate);
     this.setState({ newMarker: e.nativeEvent.coordinate },
-                  ()=> ToastAndroid.show('Recording location to report...', ToastAndroid.LONG));
+                  ()=> ToastAndroid.show(copy[this.props.lang].recordingLocation, ToastAndroid.LONG));
 
     setTimeout(()=> this.props.navigation.navigate('Links'), 2500);
     setTimeout(()=> this.setState({ newMarker: null }), 2500);
   }
 
   comingSoon = ()=>{
-    ToastAndroid.show('Directions coming soon...', ToastAndroid.LONG)
+    ToastAndroid.show(copy[this.props.lang].directionsComingSoon, ToastAndroid.LONG)
   }
   
   render() {
-    const { reports=[] } = this.props;
+    const { lang, reports=[] } = this.props;
 
     return (
       <View style={styles.container}>
@@ -95,7 +95,7 @@ export default class HomeScreen extends React.Component {
             <Marker key={id}
                     coordinate={{ latitude, longitude }}
                     image={dots[color]}
-                    title={type} description={text} />
+                    title={copy[lang][type]} description={text} />
           ))}
           {this.state.newMarker ? (
              <Marker coordinate={this.state.newMarker}/>
