@@ -11,23 +11,17 @@ import {
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
-import { WebBrowser, MapView, Icon } from 'expo';
+import { WebBrowser, MapView, Icon, Asset } from 'expo';
 
 import hooks from './network';
 import copy from './copy';
 
 const { Marker, PolyLine } = MapView;
 
-const dots = {
-  red: require('../assets/images/red-dot.png'),
-  orange: require('../assets/images/orange-dot.png'),
-  green: require('../assets/images/green-dot.png'),
-  blue: require('../assets/images/blue-dot.png'),
-};
-
 export default class HomeScreen extends React.Component {
   state = {
     newMarker: null,
+    ready: false,
   }
 
   static hooks = hooks;
@@ -35,10 +29,29 @@ export default class HomeScreen extends React.Component {
   componentDidMount(){
     this.props.navigation.addListener(
       'didFocus',
-      payload => {
-        this.props.loadReports();
-      }
+      payload => this.props.loadReports()
     );
+
+    Asset.loadAsync([
+      require('../assets/images/red-dot.png'),
+      require('../assets/images/orange-dot.png'),
+      require('../assets/images/green-dot.png'),
+      require('../assets/images/blue-dot.png'),
+    ]).then(()=> {
+      setTimeout(()=> {
+        
+        this.setState({
+          ready: true,
+          dots: {
+            red: require('../assets/images/red-dot.png'),
+            orange: require('../assets/images/orange-dot.png'),
+            green: require('../assets/images/green-dot.png'),
+            blue: require('../assets/images/blue-dot.png'),
+          }
+        });
+      }, 3000);
+    });
+
   }
   
   longPress = (e)=>{
@@ -58,6 +71,8 @@ export default class HomeScreen extends React.Component {
   
   render() {
     const { lang, reports=[] } = this.props;
+
+    if(!this.state.ready) return <View/>;
 
     return (
       <View style={styles.container}>
@@ -94,8 +109,11 @@ export default class HomeScreen extends React.Component {
           {reports.map(({ latitude, longitude, type, text, color, id })=>(
             <Marker key={id}
                     coordinate={{ latitude, longitude }}
-                    image={dots[color]}
-                    title={copy[lang][type]} description={text} />
+                    image={this.state.dots[color]}
+                    tracksViewChanges={false}
+                    title={copy[lang][type]} description={text}>
+              <Image source={require('../assets/images/no-dot.png')} onLoad={()=> this.forceUpdate()}/>
+            </Marker>
           ))}
           {this.state.newMarker ? (
              <Marker coordinate={this.state.newMarker}/>

@@ -48,6 +48,7 @@ export default class LinksScreen extends React.Component {
       color: this.state.severity,
       id: Math.random(),
     });
+    
     this.setState({ latitude: null, longitude: null, text: '', type: 'crash', severity: 'red', });
     ToastAndroid.show(copy[this.props.lang].savingReport, ToastAndroid.LONG)
   }
